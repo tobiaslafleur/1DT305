@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>IoT - Plant Monitor</title>
+  </head>
+  <body class="flex flex-col justify-center h-screen gap-10 bg-slate-800">
+    <div class="container flex flex-col gap-8 mx-auto">
+      <h1 class="text-2xl font-bold text-white">IoT - Plant Monitor</h1>
+      <div class="flex w-full gap-4">
+        <div class="flex w-full flex-col bg-[rgb(30,130,76)]/40 p-4 rounded-md">
+          <h2 class="font-semibold text-white">Current Soil Moisture</h2>
+          <div class="flex gap-1">
+            <p id="moisture" class="text-white">0</p>
+            <p class="text-white">%</p>
+          </div>
+        </div>
+        <div
+          class="flex w-full flex-col bg-[rgb(159,90,253)]/40 p-4 rounded-md"
+        >
+          <h2 class="font-semibold text-white">Current Humidity</h2>
+          <div class="flex gap-1">
+            <p id="humidity" class="text-white">0</p>
+            <p class="text-white">%</p>
+          </div>
+        </div>
+        <div
+          class="flex w-full flex-col bg-[rgb(30,139,195)]/40 p-4 rounded-md"
+        >
+          <h2 class="font-semibold text-white">Current Temperature</h2>
+          <div class="flex gap-1">
+            <p id="temperature" class="text-white">0</p>
+            <p class="text-white">°C</p>
+          </div>
+        </div>
+        <div
+          class="flex w-full flex-col bg-[rgb(255,252,127)]/40 p-4 rounded-md"
+        >
+          <h2 class="font-semibold text-white">Current Brightness</h2>
+          <div class="flex gap-1">
+            <p id="brightness" class="text-white">0</p>
+            <p class="text-white">%</p>
+          </div>
+        </div>
+      </div>
+      <div class="container flex flex-col gap-10 mx-auto">
+        <div class="flex flex-row h-96">
+          <canvas id="moistureChart" class="w-full"></canvas>
+          <canvas id="temperatureChart" class="w-full"></canvas>
+        </div>
+
+        <div class="flex flex-row h-96">
+          <canvas id="humidityChart" class="w-full"></canvas>
+          <canvas id="brightnessChart" class="w-full"></canvas>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    fetchData();
+
+    async function fetchData() {
+      fetch("http://localhost:3001/api/v1/sensor", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          createChart(
+            data,
+            "moisture",
+            "moistureChart",
+            "Soil Moisture in %",
+            "30, 130, 76",
+            {
+              scales: {
+                y: {
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.2)",
+                  },
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    font: {
+                      size: 14,
+                    },
+                    color: "white",
+                    precision: 0,
+                  },
+                },
+                x: {
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.2)",
+                  },
+                  ticks: {
+                    font: {
+                      size: 14,
+                    },
+                    color: "white",
+                    maxRotation: 70,
+                    minRotation: 70,
+                  },
+                },
+              },
+            }
+          );
+
+          createChart(
+            data,
+            "temperature",
+            "temperatureChart",
+            "Temperature in °C",
+            "30, 139, 195",
+            {
+              scales: {
+                y: {
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.2)",
+                  },
+                  beginAtZero: true,
+                  max: 50,
+                  ticks: {
+                    font: {
+                      size: 14,
+                    },
+                    color: "white",
+                    precision: 0,
+                  },
+                },
+                x: {
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.2)",
+                  },
+                  ticks: {
+                    font: {
+                      size: 14,
+                    },
+                    color: "white",
+                    maxRotation: 70,
+                    minRotation: 70,
+                  },
+                },
+              },
+            }
+          );
+
+          createChart(
+            data,
+            "humidity",
+            "humidityChart",
+            "Humidity in %",
+            "159, 90, 253",
+            {
+              scales: {
+                y: {
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.2)",
+                  },
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    font: {
+                      size: 14,
+                    },
+                    color: "white",
+                    precision: 0,
+                  },
+                },
+                x: {
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.2)",
+                  },
+                  ticks: {
+                    font: {
+                      size: 14,
+                    },
+                    color: "white",
+                    maxRotation: 70,
+                    minRotation: 70,
+                  },
+                },
+              },
+            }
+          );
+
+          createChart(
+            data,
+            "brightness",
+            "brightnessChart",
+            "Brightness in %",
+            "255, 252, 127",
+            {
+              title: {
+                color: "blue",
+                font: {
+                  size: 20,
+                },
+              },
+
+              scales: {
+                y: {
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.2)",
+                  },
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    font: {
+                      size: 14,
+                    },
+                    color: "white",
+                    precision: 0,
+                  },
+                },
+                x: {
+                  grid: {
+                    color: "rgba(255, 255, 255, 0.2)",
+                  },
+                  ticks: {
+                    font: {
+                      size: 14,
+                    },
+                    color: "white",
+                    maxRotation: 70,
+                    minRotation: 70,
+                  },
+                },
+              },
+            }
+          );
+        });
+
+      const createChart = (input, key, chartName, label, color, options) => {
+        const yAxis = input[key].map((item) => {
+          return item[key];
+        });
+
+        const xAxis = input[key].map((item) => {
+          return new Date(item.timestamp).toLocaleTimeString("sv-SE");
+        });
+
+        const value = document.getElementById(key);
+
+        if (value) {
+          value.innerHTML = yAxis[yAxis.length - 1];
+        }
+
+        new Chart(document.getElementById(chartName), {
+          type: "line",
+          data: {
+            labels: xAxis,
+            datasets: [
+              {
+                fill: {
+                  target: "origin",
+                  above: `rgba(${color}, 0.2)`,
+                },
+                backgroundColor: `rgba(${color})`,
+                borderColor: `rgba(${color})`,
+                label,
+                data: yAxis,
+                borderWidth: 1,
+                pointRadius: 5,
+              },
+            ],
+          },
+          options,
+        });
+      };
+    }
+
+    Chart.defaults.font.size = 16;
+    Chart.defaults.color = "rgba(255, 255, 255)";
+  </script>
+</html>
